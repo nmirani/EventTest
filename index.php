@@ -16,12 +16,7 @@ FacebookSession::setDefaultApplication( $app_id, $app_secret );
 
 $code = $_REQUEST["code"];
  
-if(empty($code)) {
-    $auth_url = "http://www.facebook.com/dialog/oauth?client_id="
-    . $app_id . "&redirect_uri=" . urlencode($my_url)
-    . "&scope=create_event";
-    echo("<script>top.location.href='" . $auth_url . "'</script>");
-}
+
  
 $token_url = "https://graph.facebook.com/oauth/access_token?client_id="
 . $app_id . "&redirect_uri=" . urlencode($my_url)
