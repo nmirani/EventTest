@@ -5,7 +5,7 @@ session_start();
 // Facebook app settings
 $app_id = '1486180144974468';
 $app_secret = '528b621709faf5bf2277b5272a1572e6';
-$redirect_uri = 'http://evening-earth-2752.herokuapp.com';
+$redirect_uri = 'http://murmuring-plains-1063.herokuapp.com/';
  
 // Define the root directoy
 define( 'ROOT', dirname( __FILE__ ) . '/' );
