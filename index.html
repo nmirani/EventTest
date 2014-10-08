@@ -39,6 +39,7 @@
         FB.login(function(response) {
            if (response.authResponse) 
            {
+            var access_token = FB.getAuthResponse()['accessToken']; //gets users access token
             getUserInfo(); // Get User Information.
            } else
            {
