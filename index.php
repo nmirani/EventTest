@@ -2,7 +2,7 @@
 
 $app_id = "1486180144974468";
 $app_secret = "528b621709faf5bf2277b5272a1572e6";
-$my_url = "http://evening-earth-2752.herokuapp.com/";
+$my_url = "http://murmuring-plains-1063.herokuapp.com/";
  
 $code = $_REQUEST["code"];
  
