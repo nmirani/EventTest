@@ -1,14 +1,17 @@
 <?php
 
-
+$app_id = "1486180144974468";
+$app_secret = "528b621709faf5bf2277b5272a1572e6";
+$my_url = "http://murmuring-plains-1063.herokuapp.com/";
  
-$app_id = '1486180144974468';
-$app_secret = '528b621709faf5bf2277b5272a1572e6';
-$redirect_login_url = 'http://murmuring-plains-1063.herokuapp.com/';
-
-FacebookSession::setDefaultApplication( $app_id, $app_secret );
-
-
+$code = $_REQUEST["code"];
+ 
+if(empty($code)) {
+    $auth_url = "http://www.facebook.com/dialog/oauth?client_id="
+    . $app_id . "&redirect_uri=" . urlencode($my_url)
+    . "&scope=create_event";
+    echo("<script>top.location.href='" . $auth_url . "'</script>");
+}
  
 $token_url = "https://graph.facebook.com/oauth/access_token?client_id="
 . $app_id . "&redirect_uri=" . urlencode($my_url)
@@ -47,4 +50,3 @@ input[type=text],textarea {width: 210px;}
 </form>
 </body>
 </html>
-
