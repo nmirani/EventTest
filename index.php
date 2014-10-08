@@ -1,12 +1,6 @@
 <?php
-session_start();
- 
-require_once 'facebook-php-sdk/autoload.php';
-use Facebook\FacebookSession;
-use Facebook\FacebookRequest;
-use Facebook\GraphUser;
-use Facebook\FacebookRequestException;
-use Facebook\FacebookRedirectLoginHelper;
+
+
  
 $app_id = '1486180144974468';
 $app_secret = '528b621709faf5bf2277b5272a1572e6';
@@ -14,8 +8,6 @@ $redirect_login_url = 'http://murmuring-plains-1063.herokuapp.com/';
 
 FacebookSession::setDefaultApplication( $app_id, $app_secret );
 
-$code = $_REQUEST["code"];
- 
 
  
 $token_url = "https://graph.facebook.com/oauth/access_token?client_id="
