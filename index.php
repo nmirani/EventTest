@@ -1,44 +1,52 @@
 <?php
-// Must pass session data for the library to work (only if not already included in your app)
-session_start();
+
+$app_id = "1486180144974468";
+$app_secret = "528b621709faf5bf2277b5272a1572e6";
+$my_url = "http://murmuring-plains-1063.herokuapp.com/";
  
-// Facebook app settings
-$app_id = '1486180144974468';
-$app_secret = '528b621709faf5bf2277b5272a1572e6';
-$redirect_uri = 'http://murmuring-plains-1063.herokuapp.com/';
+$code = $_REQUEST["code"];
  
-use Facebook\FacebookSession;
-use Facebook\FacebookRedirectLoginHelper;
-use Facebook\FacebookRequest;
-use Facebook\FacebookResponse;
-use Facebook\FacebookSDKException;
-use Facebook\FacebookRequestException;
-use Facebook\FacebookAuthorizationException;
-use Facebook\GraphObject;
-use Facebook\GraphUser;
-
-if (!isset($_SESSION['facebookUserId']) || !isset($_SESSION['facebookSession']) || !isset($_SESSION['facebookUserProfile'])) {
-    // init app with app id (APPID) and secret (SECRET)
-    FacebookSession::setDefaultApplication($appId,$appSecret);
-
-    // login helper with redirect_uri
-    $helper = new FacebookRedirectLoginHelper( $canvasUrl );
-    try {
-         $FBSession = $helper->getSessionFromRedirect();
-    } catch( FacebookRequestException $ex ) {
-        // When Facebook returns an error
-    } catch( Exception $ex ) {
-         // When validation fails or other local issues
-    }
-    if (!isset($FBSession)) {
-        // STEP ONE - REDIRECT THE USER TO FACEBOOK FOR AUTO LOGIN / APP APPROVAL
-        header('Location: ' . $helper->getLoginUrl());
-        exit();
-    } else {
-        $user_profile = (new FacebookRequest($FBSession, 'GET', '/me'))->execute()->getGraphObject(GraphUser::className());
-        $_SESSION['facebookUserId'] = $user_profile->getID();
-        $_SESSION['facebookSession'] = $FBSession; // I DON'T THINK THIS ACTAULLY WORKS RIGHT
-        $_SESSION['facebookUserProfile'] = $user_profile;
-
-    }
+if(empty($code)) {
+    $auth_url = "http://www.facebook.com/dialog/oauth?client_id="
+    . $app_id . "&redirect_uri=" . urlencode($my_url)
+    . "&scope=create_event";
+    echo("<script>top.location.href='" . $auth_url . "'</script>");
 }
+ 
+$token_url = "https://graph.facebook.com/oauth/access_token?client_id="
+. $app_id . "&redirect_uri=" . urlencode($my_url)
+. "&client_secret=" . $app_secret
+. "&code=" . $code;
+$access_token = file_get_contents($token_url);
+ 
+$event_url = "https://graph.facebook.com/me/events?" . $access_token;
+?>
+
+
+<!doctype html>
+<html>
+<head>
+<title>Create An Event</title>
+<style>
+label {float: left; width: 100px;}
+input[type=text],textarea {width: 210px;}
+</style>
+</head>
+<body>
+<form enctype="multipart/form-data" action="<?php echo $event_url; ?>" method="post">
+    <p><label for="name">Event Name</label><input type="text" name="name" value="" /></p>
+    <p><label for="description">Event Description</label><textarea name="description"></textarea></p>
+    <p><label for="location">Location</label><input type="text" name="location" value="" /></p>
+    <p><label for="">Start Time</label><input type="text" name="start_time" value="<?php echo date('Y-m-d H:i:s'); ?>" /></p>
+    <p><label for="end_time">End Time</label><input type="text" name="end_time" value="<?php echo date('Y-m-d H:i:s', mktime(0, 0, 0, date("m")  , date("d")+1, date("Y"))); ?>" /></p>
+    <p><label for="picture">Event Picture</label><input type="file" name="picture" /></p>
+    <p>
+        <label for="privacy_type">Privacy</label>
+        <input type="radio" name="privacy_type" value="OPEN" checked='checked'/>Open&nbsp;&nbsp;&nbsp;
+        <input type="radio" name="privacy_type" value="CLOSED" />Closed&nbsp;&nbsp;&nbsp;
+        <input type="radio" name="privacy_type" value="SECRET" />Secret&nbsp;&nbsp;&nbsp;
+    </p>
+    <p><input type="submit" value="Create Event" /></p>
+</form>
+</body>
+</html>
