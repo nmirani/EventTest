@@ -1,8 +1,8 @@
 <?php
 
-$app_id = "APP_ID";
-$app_secret = "APP_SECRET";
-$my_url = "REDIRECT_URL";
+$app_id = "1486180144974468";
+$app_secret = "528b621709faf5bf2277b5272a1572e6";
+$my_url = "http://evening-earth-2752.herokuapp.com/";
  
 $code = $_REQUEST["code"];
  
