@@ -9,6 +9,7 @@ session_start();
 $app_id = '1486180144974468';
 $app_secret = '528b621709faf5bf2277b5272a1572e6';
 $redirect_uri = 'http://murmuring-plains-1063.herokuapp.com/';
+$my_url = 'http://murmuring-plains-1063.herokuapp.com/';
  
 // Define the root directoy
 define( 'ROOT', dirname( __FILE__ ) . '/' );
@@ -65,7 +66,7 @@ if ( isset( $session ) ) {
   $session = new FacebookSession( $session->getToken() );
  
   // Create the logout URL (logout page should destroy the session)
-  $logoutURL = $helper->getLogoutUrl( $session, 'http://evening-earth-2752.herokuapp.com/logout' );
+  $logoutURL = $helper->getLogoutUrl( $session, 'http://murmuring-plains-1063.herokuapp.com//logout' );
  
   echo '<a href="' . $logoutURL . '">Log out</a>';
 } else {
