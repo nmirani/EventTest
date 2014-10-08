@@ -2,7 +2,11 @@
 
 $app_id = "1486180144974468";
 $app_secret = "528b621709faf5bf2277b5272a1572e6";
+<<<<<<< HEAD:createevent.php
 $my_url = "http://murmuring-plains-1063.herokuapp.com/"; //url
+=======
+$my_url = "http://murmuring-plains-1063.herokuapp.com/";
+>>>>>>> 4eec946a87a0c0169eae71bbf25e09017436ec67:index.php
  
 $code = $_REQUEST["code"];
  
