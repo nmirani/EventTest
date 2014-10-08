@@ -1,52 +1,75 @@
 <?php
-
-$app_id = "1486180144974468";
-$app_secret = "528b621709faf5bf2277b5272a1572e6";
-$my_url = "http://murmuring-plains-1063.herokuapp.com/";
+// Must pass session data for the library to work (only if not already included in your app)
+session_start();
  
-$code = $_REQUEST["code"];
+// Facebook app settings
+$app_id = '1486180144974468';
+$app_secret = '528b621709faf5bf2277b5272a1572e6';
+$redirect_uri = 'http://evening-earth-2752.herokuapp.com';
  
-if(empty($code)) {
-    $auth_url = "http://www.facebook.com/dialog/oauth?client_id="
-    . $app_id . "&redirect_uri=" . urlencode($my_url)
-    . "&scope=create_event";
-    echo("<script>top.location.href='" . $auth_url . "'</script>");
+// Define the root directoy
+define( 'ROOT', dirname( __FILE__ ) . '/' );
+ 
+// Autoload the required files
+require_once( ROOT . 'facebook-php-sdk-v4-4.0-dev/autoload.php' );
+ 
+use Facebook\FacebookSession;
+use Facebook\FacebookRedirectLoginHelper;
+ 
+// Initialize the SDK
+FacebookSession::setDefaultApplication( $app_id, $app_secret );
+ 
+// Create the login helper and replace REDIRECT_URI with your URL
+// Use the same domain you set for the apps 'App Domains'
+// e.g. $helper = new FacebookRedirectLoginHelper( 'http://mydomain.com/redirect' );
+$helper = new FacebookRedirectLoginHelper( $redirect_uri );
+ 
+// Check if existing session exists
+if ( isset( $_SESSION ) && isset( $_SESSION['fb_token'] ) ) {
+  // Create new session from saved access_token
+  $session = new FacebookSession( $_SESSION['fb_token'] );
+ 
+    // Validate the access_token to make sure it's still valid
+    try {
+      if ( ! $session->validate() ) {
+        $session = null;
+      }
+    } catch ( Exception $e ) {
+      // Catch any exceptions
+      $session = null;
+    }
+} else {
+  // No session exists
+  try {
+    $session = $helper->getSessionFromRedirect();
+  } catch( FacebookRequestException $ex ) {
+ 
+    // When Facebook returns an error
+  } catch( Exception $ex ) {
+ 
+    // When validation fails or other local issues
+    echo $ex->message;
+  }
 }
  
-$token_url = "https://graph.facebook.com/oauth/access_token?client_id="
-. $app_id . "&redirect_uri=" . urlencode($my_url)
-. "&client_secret=" . $app_secret
-. "&code=" . $code;
-$access_token = file_get_contents($token_url);
+// Check if a session exists
+if ( isset( $session ) ) {
  
-$event_url = "https://graph.facebook.com/me/events?" . $access_token;
-?>
-
-
-<!doctype html>
-<html>
-<head>
-<title>Create An Event</title>
-<style>
-label {float: left; width: 100px;}
-input[type=text],textarea {width: 210px;}
-</style>
-</head>
-<body>
-<form enctype="multipart/form-data" action="<?php echo $event_url; ?>" method="post">
-    <p><label for="name">Event Name</label><input type="text" name="name" value="" /></p>
-    <p><label for="description">Event Description</label><textarea name="description"></textarea></p>
-    <p><label for="location">Location</label><input type="text" name="location" value="" /></p>
-    <p><label for="">Start Time</label><input type="text" name="start_time" value="<?php echo date('Y-m-d H:i:s'); ?>" /></p>
-    <p><label for="end_time">End Time</label><input type="text" name="end_time" value="<?php echo date('Y-m-d H:i:s', mktime(0, 0, 0, date("m")  , date("d")+1, date("Y"))); ?>" /></p>
-    <p><label for="picture">Event Picture</label><input type="file" name="picture" /></p>
-    <p>
-        <label for="privacy_type">Privacy</label>
-        <input type="radio" name="privacy_type" value="OPEN" checked='checked'/>Open&nbsp;&nbsp;&nbsp;
-        <input type="radio" name="privacy_type" value="CLOSED" />Closed&nbsp;&nbsp;&nbsp;
-        <input type="radio" name="privacy_type" value="SECRET" />Secret&nbsp;&nbsp;&nbsp;
-    </p>
-    <p><input type="submit" value="Create Event" /></p>
-</form>
-</body>
-</html>
+  // Save the session
+  $_SESSION['fb_token'] = $session->getToken();
+ 
+  // Create session using saved token or the new one we generated at login
+  $session = new FacebookSession( $session->getToken() );
+ 
+  // Create the logout URL (logout page should destroy the session)
+  $logoutURL = $helper->getLogoutUrl( $session, 'http://evening-earth-2752.herokuapp.com/logout' );
+ 
+  echo '<a href="' . $logoutURL . '">Log out</a>';
+} else {
+  // No session
+ 
+  // Get login URL
+  $loginUrl = $helper->getLoginUrl( $permissions );
+ 
+  echo '<a href="' . $loginUrl . '">Log in</a>';
+}
