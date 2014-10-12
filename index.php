@@ -49,7 +49,7 @@
 	 $app_id = '1486180144974468';
 	 $app_secret = '528b621709faf5bf2277b5272a1572e6';
 	 $url = 'http://murmuring-plains-1063.herokuapp.com/';
-	 $redirect_url='http://murmuring-plains-1063.herokuapp.com/';
+	 $redirect_url='http://murmuring-plains-1063.herokuapp.com/app/';
 	 
 	 //3.Initialize application, create helper object and get fb sess
 	 FacebookSession::setDefaultApplication($app_id,$app_secret);
