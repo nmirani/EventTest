@@ -12,8 +12,12 @@ $facebook = new Facebook(array(
 				'appId' => $app_id,
 				'secret' => $app_secret,
 				'cookie' => true));
+				
+				
+$session = Facebook\FacebookSession::newAppSession('1486180144974468','528b621709faf5bf2277b5272a1572e6');
 
 session_start();
+
 
 //getting access token
 $access_token =  $facebook->getAccessToken();
@@ -25,6 +29,7 @@ $helper->getLoginUrl(array('scope' => 'user_events'));
 
 // Get User ID
 $user = $facebook->getUser();
+$facebook->api($url, 'GET');
 
 // see if a existing session exists
 if ( isset( $_SESSION ) && isset( $_SESSION['fb_token'] ) ) {
