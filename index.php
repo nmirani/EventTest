@@ -58,5 +58,5 @@ if ( isset( $session ) ) {
   echo '<pre>' . print_r( $graphObject, 1 ) . '</pre>';
   
   error_reporting(E_ALL);
-	ini_set('display_errors', 1);
+	ini_set('display_errors', 1); }
 	?>
