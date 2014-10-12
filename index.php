@@ -1,58 +1,72 @@
 <?php
+/*	FACEBOOK LOGIN BASIC - PHP SDK V4.0
+ *	file 			- index.php
+ * 	Developer 		- Krishna Teja G S
+ *	Website			- http://packetcode.com/apps/fblogin-basic/
+ *	Date 			- 27th Sept 2014
+ *	license			- GNU General Public License version 2 or later
+*/
 
-include_once "facebook-php-sdk/src/facebook.php";
+/* INCLUSION OF LIBRARY FILEs*/
+	require_once( 'lib/Facebook/FacebookSession.php');
+	require_once( 'lib/Facebook/FacebookRequest.php' );
+	require_once( 'lib/Facebook/FacebookResponse.php' );
+	require_once( 'lib/Facebook/FacebookSDKException.php' );
+	require_once( 'lib/Facebook/FacebookRequestException.php' );
+	require_once( 'lib/Facebook/FacebookRedirectLoginHelper.php');
+	require_once( 'lib/Facebook/FacebookAuthorizationException.php' );
+	require_once( 'lib/Facebook/GraphObject.php' );
+	require_once( 'lib/Facebook/GraphUser.php' );
+	require_once( 'lib/Facebook/GraphSessionInfo.php' );
+	require_once( 'lib/Facebook/Entities/AccessToken.php');
+	require_once( 'lib/Facebook/HttpClients/FacebookCurl.php' );
+	require_once( 'lib/Facebook/HttpClients/FacebookHttpable.php');
+	require_once( 'lib/Facebook/HttpClients/FacebookCurlHttpClient.php');
 
+/* USE NAMESPACES */
+	
+	use Facebook\FacebookSession;
+	use Facebook\FacebookRedirectLoginHelper;
+	use Facebook\FacebookRequest;
+	use Facebook\FacebookResponse;
+	use Facebook\FacebookSDKException;
+	use Facebook\FacebookRequestException;
+	use Facebook\FacebookAuthorizationException;
+	use Facebook\GraphObject;
+	use Facebook\GraphUser;
+	use Facebook\GraphSessionInfo;
+	use Facebook\FacebookHttpable;
+	use Facebook\FacebookCurlHttpClient;
+	use Facebook\FacebookCurl;
 
-$app_id = "1486180144974468";
-$app_secret = "528b621709faf5bf2277b5272a1572e6";
-$my_url = "http://murmuring-plains-1063.herokuapp.com/";
+/*PROCESS*/
+	
+	//1.Stat Session
+	 session_start();
+	//2.Use app id,secret and redirect url
 
-$facebook = new Facebook(array(
-						'appId' => $app_id,
-						'secret' => $app_secret,
-						'cookie' => true));
-						
-$access_token =  $facebook->getAccessToken();
-$facebook->setAccessToken($access_token);
+	 $app_id = '1486180144974468';
+	 $app_secret = '528b621709faf5bf2277b5272a1572e6';
+	 $url = 'http://murmuring-plains-1063.herokuapp.com/';
+	 $redirect_url='http://murmuring-plains-1063.herokuapp.com/';
+	 
+	 //3.Initialize application, create helper object and get fb sess
+	 FacebookSession::setDefaultApplication($app_id,$app_secret);
+	 $helper = new FacebookRedirectLoginHelper($redirect_url);
+	 $sess = $helper->getSessionFromRedirect();
 
-// Get User ID
-$user = $facebook->getUser();
-
-// We may or may not have this data based on whether the user is logged in.
-//
-// If we have a $user id here, it means we know the user is logged into
-// Facebook, but we don't know if the access token is valid. An access
-// token is invalid if the user logged out of Facebook.
-
-if ($user) {
-  try {
-    // Proceed knowing you have a logged in user who's authenticated.
-    $user_profile = $facebook->api('/me');
-  } catch (FacebookApiException $e) {
-    error_log($e);
-    $user = null;
-  }
-}
-
-// Login or logout url will be needed depending on current user state.
-if ($user) {
-  $logoutUrl = $facebook->getLogoutUrl();
-} else {
-  $loginUrl = $facebook->getLoginUrl();
-}
-
-$request = new FacebookRequest(
-  $session,
-  'GET',
-  '/{me}/events/attending'
-);
-$response = $request->execute();
-$graphObject = $response->getGraphObject();
-
-<h1> People attending event </h1>
-echo $graphObject "list of users";
-print $graphObject;
-/* handle the result */
-
- 
-
+	//4. if fb sess exists echo name 
+	 	if(isset($sess)){
+	 		//create request object,execute and capture response
+		$request = new FacebookRequest($sess, 'GET', '/me');
+		// from response get graph object
+		$response = $request->execute();
+		$graph = $response->getGraphObject(GraphUser::className());
+		// use graph object methods to get user details
+		$name= $graph->getName();
+		echo "hi $name";
+	}else{
+		//else echo login
+		echo '<a href='.$helper->getLoginUrl().'>Login with facebook</a>';
+	}
+	?>
