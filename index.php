@@ -44,13 +44,14 @@ if ($user) {
 $request = new FacebookRequest(
   $session,
   'GET',
-  '/{347776302055884}/attending'
+  '/{me}/events/attending'
 );
 $response = $request->execute();
 $graphObject = $response->getGraphObject();
 
 <h1> People attending event </h1>
 echo $graphObject "list of users";
+print $graphObject;
 /* handle the result */
 
  
