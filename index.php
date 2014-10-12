@@ -5,7 +5,7 @@ include_once "facebook-php-sdk/src/facebook.php";
 
 $app_id = "1486180144974468";
 $app_secret = "528b621709faf5bf2277b5272a1572e6";
-$my_url = "http://murmuring-plains-1063.herokuapp.com/";
+$my_url = "http://agile-badlands-9486.herokuapp.com/";
 
 $facebook = new Facebook(array(
 						'appId' => $app_id,
@@ -18,7 +18,7 @@ session_start();
 FacebookSession::setDefaultApplication( '1486180144974468','528b621709faf5bf2277b5272a1572e6' );
  
 // login helper with redirect_uri
-$helper = new FacebookRedirectLoginHelper( 'http://murmuring-plains-1063.herokuapp.com/' );
+$helper = new FacebookRedirectLoginHelper( 'http://agile-badlands-9486.herokuapp.com/' );
  
 // see if a existing session exists
 if ( isset( $_SESSION ) && isset( $_SESSION['fb_token'] ) ) {
