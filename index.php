@@ -8,20 +8,20 @@
 */
 
 /* INCLUSION OF LIBRARY FILEs*/
-	require_once( 'facebook-php-sdk/src/Facebook/FacebookSession.php');
-	require_once( 'facebook-php-sdk/src/Facebook/FacebookRequest.php' );
-	require_once( 'facebook-php-sdk/src/Facebook/FacebookResponse.php' );
-	require_once( 'facebook-php-sdk/src/Facebook/FacebookSDKException.php' );
-	require_once( 'facebook-php-sdk/src/Facebook/FacebookRequestException.php' );
-	require_once( 'facebook-php-sdk/src/Facebook/FacebookRedirectLoginHelper.php');
-	require_once( 'facebook-php-sdk/src/Facebook/FacebookAuthorizationException.php' );
-	require_once( 'facebook-php-sdk/src/Facebook/GraphObject.php' );
-	require_once( 'facebook-php-sdk/src/Facebook/GraphUser.php' );
-	require_once( 'facebook-php-sdk/src/Facebook/GraphSessionInfo.php' );
-	require_once( 'facebook-php-sdk/src/Facebook/Entities/AccessToken.php');
-	require_once( 'facebook-php-sdk/src/Facebook/HttpClients/FacebookCurl.php' );
-	require_once( 'facebook-php-sdk/src/Facebook/HttpClients/FacebookHttpable.php');
-	require_once( 'facebook-php-sdk/src/Facebook/HttpClients/FacebookCurlHttpClient.php');
+	require_once( 'lib/Facebook/FacebookSession.php');
+	require_once( 'lib/Facebook/FacebookRequest.php' );
+	require_once( 'lib/Facebook/FacebookResponse.php' );
+	require_once( 'lib/Facebook/FacebookSDKException.php' );
+	require_once( 'lib/Facebook/FacebookRequestException.php' );
+	require_once( 'lib/Facebook/FacebookRedirectLoginHelper.php');
+	require_once( 'lib/Facebook/FacebookAuthorizationException.php' );
+	require_once( 'lib/Facebook/GraphObject.php' );
+	require_once( 'lib/Facebook/GraphUser.php' );
+	require_once( 'lib/Facebook/GraphSessionInfo.php' );
+	require_once( 'lib/Facebook/Entities/AccessToken.php');
+	require_once( 'lib/Facebook/HttpClients/FacebookCurl.php' );
+	require_once( 'lib/Facebook/HttpClients/FacebookHttpable.php');
+	require_once( 'lib/Facebook/HttpClients/FacebookCurlHttpClient.php');
 
 /* USE NAMESPACES */
 	
@@ -35,9 +35,10 @@
 	use Facebook\GraphObject;
 	use Facebook\GraphUser;
 	use Facebook\GraphSessionInfo;
-	use Facebook\FacebookHttpable;
-	use Facebook\FacebookCurlHttpClient;
-	use Facebook\FacebookCurl;
+	use Facebook\HttpClients\FacebookHttpable;
+	use Facebook\HttpClients\FacebookCurl;
+	use Facebook\HttpClients\FacebookCurlHttpClient;
+	use Facebook\Entities\AccessToken;
 
 /*PROCESS*/
 	
@@ -47,13 +48,15 @@
 
 	 $app_id = '1486180144974468';
 	 $app_secret = '528b621709faf5bf2277b5272a1572e6';
-	 $url = 'http://agile-badlands-9486.herokuapp.com/';
-	 $redirect_url='http://agile-badlands-9486.herokuapp.com/';
+	 $url = 'http://murmuring-plains-1063.herokuapp.com/';
+	 $redirect_url='http://murmuring-plains-1063.herokuapp.com/';
 	 
 	 //3.Initialize application, create helper object and get fb sess
 	 FacebookSession::setDefaultApplication($app_id,$app_secret);
 	 $helper = new FacebookRedirectLoginHelper($redirect_url);
 	 $sess = $helper->getSessionFromRedirect();
+	 $helper->getLoginUrl(array('scope' => 'user_events'));
+
 
 	//4. if fb sess exists echo name 
 	 	if(isset($sess)){
@@ -69,4 +72,7 @@
 		//else echo login
 		echo '<a href='.$helper->getLoginUrl().'>Login with facebook</a>';
 	}
+
+	error_reporting(E_ALL);
+	ini_set('display_errors', 1);
 	?>
