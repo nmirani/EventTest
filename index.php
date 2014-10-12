@@ -1,79 +1,62 @@
 <?php
-/*	FACEBOOK LOGIN BASIC - PHP SDK V4.0
- *	file 			- index.php
- * 	Developer 		- Krishna Teja G S
- *	Website			- http://packetcode.com/apps/fblogin-basic/
- *	Date 			- 27th Sept 2014
- *	license			- GNU General Public License version 2 or later
-*/
 
-/* INCLUSION OF LIBRARY FILEs*/
-	require_once( 'facebook-php-sdk/src/Facebook/facebook.php');
-	require_once( 'facebook-php-sdk/src/Facebook/FacebookSession.php');
-	require_once( 'facebook-php-sdk/src/Facebook/FacebookRequest.php' );
-	require_once( 'facebook-php-sdk/src/Facebook/FacebookResponse.php' );
-	require_once( 'facebook-php-sdk/src/Facebook/FacebookSDKException.php' );
-	require_once( 'facebook-php-sdk/src/Facebook/FacebookRequestException.php' );
-	require_once( 'facebook-php-sdk/src/Facebook/FacebookRedirectLoginHelper.php');
-	require_once( 'facebook-php-sdk/src/Facebook/FacebookAuthorizationException.php' );
-	require_once( 'facebook-php-sdk/src/Facebook/GraphObject.php' );
-	require_once( 'facebook-php-sdk/src/Facebook/GraphUser.php' );
-	require_once( 'facebook-php-sdk/src/Facebook/GraphSessionInfo.php' );
-	require_once( 'facebook-php-sdk/src/Facebook/Entities/AccessToken.php');
-	require_once( 'facebook-php-sdk/src/Facebook/HttpClients/FacebookCurl.php' );
-	require_once( 'facebook-php-sdk/src/Facebook/HttpClients/FacebookHttpable.php');
-	require_once( 'facebook-php-sdk/src/Facebook/HttpClients/FacebookCurlHttpClient.php');
+include_once "facebook-php-sdk/src/facebook.php";
 
-/* USE NAMESPACES */
-	
-	use Facebook\FacebookSession;
-	use Facebook\FacebookRedirectLoginHelper;
-	use Facebook\FacebookRequest;
-	use Facebook\FacebookResponse;
-	use Facebook\FacebookSDKException;
-	use Facebook\FacebookRequestException;
-	use Facebook\FacebookAuthorizationException;
-	use Facebook\GraphObject;
-	use Facebook\GraphUser;
-	use Facebook\GraphSessionInfo;
-	use Facebook\HttpClients\FacebookHttpable;
-	use Facebook\HttpClients\FacebookCurl;
-	use Facebook\HttpClients\FacebookCurlHttpClient;
-	use Facebook\Entities\AccessToken;
-
-/*PROCESS*/
-	
-	//1.Stat Session
-	 session_start();
-	//2.Use app id,secret and redirect url
-
-	 $app_id = '1486180144974468';
-	 $app_secret = '528b621709faf5bf2277b5272a1572e6';
-	 $url = 'http://agile-badlands-9486.herokuapp.com/';
-	 $redirect_url='http://agile-badlands-9486.herokuapp.com/';
-	 
-	 //3.Initialize application, create helper object and get fb sess
-	 FacebookSession::setDefaultApplication($app_id,$app_secret);
-	 $helper = new FacebookRedirectLoginHelper($redirect_url);
-	 $sess = $helper->getSessionFromRedirect();
-	 $helper->getLoginUrl(array('scope' => 'user_events'));
+$app_id = '1486180144974468';
+$app_secret = '528b621709faf5bf2277b5272a1572e6';
+$url = 'http://agile-badlands-9486.herokuapp.com/';
 
 
-	//4. if fb sess exists echo name 
-	 	if(isset($sess)){
-	 		//create request object,execute and capture response
-		$request = new FacebookRequest($sess, 'GET', '/me');
-		// from response get graph object
-		$response = $request->execute();
-		$graph = $response->getGraphObject(GraphUser::className());
-		// use graph object methods to get user details
-		$name= $graph->getName();
-		echo "hi $name";
-	}else{
-		//else echo login
-		echo '<a href='.$helper->getLoginUrl().'>Login with facebook</a>';
-	}
 
-	error_reporting(E_ALL);
+$facebook = new Facebook(array(
+				'appId' => $app_id,
+				'secret' => $app_secret,
+				'cookie' => true));
+
+session_start();
+
+//getting access token
+$access_token =  $facebook->getAccessToken();
+$facebook->setAccessToken($access_token);
+
+//setting login and including the required permissions
+$helper = new FacebookRedirectLoginHelper( 'http://agile-badlands-9486.herokuapp.com/' );
+$helper->getLoginUrl(array('scope' => 'user_events'));
+
+// Get User ID
+$user = $facebook->getUser();
+
+// see if a existing session exists
+if ( isset( $_SESSION ) && isset( $_SESSION['fb_token'] ) ) {
+  // create new session from saved access_token
+  $session = new FacebookSession( $_SESSION['fb_token'] );
+  
+  // validate the access_token to make sure it's still valid
+  try {
+    if ( !$session->validate() ) {
+      $session = null;
+    }
+  } catch ( Exception $e ) {
+    // catch any exceptions
+    $session = null;
+  }
+}
+
+// see if we have a session
+if ( isset( $session ) ) {
+  
+  // save the session
+  $_SESSION['fb_token'] = $session->getToken();
+  // create a session using saved token or the new one we generated at login
+  $session = new FacebookSession( $session->getToken() );
+  
+  $request = new FacebookRequest( $session, 'GET', '/{347776302055884}/attending' );
+  $response = $request->execute();
+  // get response
+  $graphObject = $response->getGraphObject()->asArray();
+
+  echo '<pre>' . print_r( $graphObject, 1 ) . '</pre>';
+  
+  error_reporting(E_ALL);
 	ini_set('display_errors', 1);
 	?>
