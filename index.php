@@ -15,6 +15,7 @@ $facebook = new Facebook(array(
 				
 				
 $session = Facebook\FacebookSession::newAppSession('1486180144974468','528b621709faf5bf2277b5272a1572e6');
+print_r($session);
 
 session_start();
 
@@ -22,6 +23,7 @@ session_start();
 //getting access token
 $access_token =  $facebook->getAccessToken();
 $facebook->setAccessToken($access_token);
+print_r($facebook);
 
 //setting login and including the required permissions
 $helper = new FacebookRedirectLoginHelper( 'http://agile-badlands-9486.herokuapp.com/' );
@@ -40,10 +42,13 @@ if ( isset( $_SESSION ) && isset( $_SESSION['fb_token'] ) ) {
   try {
     if ( !$session->validate() ) {
       $session = null;
+      print_r($session);
+
     }
   } catch ( Exception $e ) {
     // catch any exceptions
     $session = null;
+    print_r($session);
   }
 }
 
