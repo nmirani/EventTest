@@ -16,7 +16,15 @@ $facebook = new Facebook(array(
 $access_token =  $facebook->getAccessToken();
 $facebook->setAccessToken($access_token);
 
+$session = Facebook\FacebookSession::newAppSession('1486180144974468','528b621709faf5bf2277b5272a1572e6');
+print_r($session);
+
 $session = new FacebookSession('$access_token');
+
+//setting login and including the required permissions
+$helper = new FacebookRedirectLoginHelper( 'http://agile-badlands-9486.herokuapp.com/' );
+$helper->getLoginUrl(array('scope' => 'user_events'));
+
 
 try {
 	
@@ -37,6 +45,8 @@ $graphObject = $response->getGraphObject();
 } catch (\Exception $e) {
   // Some other error occurred
   print_r $e;
+   error_reporting(E_ALL);
+	ini_set('display_errors', 1);
 }
  
 ?>
