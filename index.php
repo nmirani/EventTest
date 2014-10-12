@@ -5,7 +5,7 @@ include_once "facebook-php-sdk/src/facebook.php";
 
 $app_id = "1486180144974468";
 $app_secret = "528b621709faf5bf2277b5272a1572e6";
-$my_url = "http://agile-badlands-9486.herokuapp.com/";
+$my_url = "http://murmuring-plains-1063.herokuapp.com/";
 
 $facebook = new Facebook(array(
 						'appId' => $app_id,
@@ -50,5 +50,8 @@ $response = $request->execute();
 $graphObject = $response->getGraphObject();
 
 <h1> People attending event </h1>
-echo $request;
+echo $graphObject "list of users";
 /* handle the result */
+
+ 
+
