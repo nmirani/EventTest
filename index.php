@@ -19,11 +19,19 @@ $facebook->setAccessToken($access_token);
 $session = new FacebookSession('$access_token');
 
 try {
-  $me = (new FacebookRequest(
-    $session, 'GET', '/me'
-  ))->execute()->getGraphObject();
-  echo $me->getName();
+	
+  $request = new FacebookRequest(
+  $session,
+  'GET',
+  '/{347776302055884}/attending'
+);
+$response = $request->execute();
+$graphObject = $response->getGraphObject();
+ print_r $graphObject;
+ echo "List of attendees" $graphObject;
+ 
 } catch (FacebookRequestException $e) {
+	print_r($e);
   // The Graph API returned an error
   print_r $e;
 } catch (\Exception $e) {
