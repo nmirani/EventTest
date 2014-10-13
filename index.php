@@ -1,6 +1,10 @@
 <?php
 
+session_start();
+require_once 'autoload.php';
+
 include_once "facebook-php-sdk/src/facebook.php";
+
 
 $app_id = '1486180144974468';
 $app_secret = '528b621709faf5bf2277b5272a1572e6';
@@ -13,10 +17,11 @@ $facebook = new Facebook(array(
 				'secret' => $app_secret,
 				'cookie' => true));
 				
+
+
+$session = Facebook\FacebookSession::setDefaultApplication('1486180144974468','528b621709faf5bf2277b5272a1572e6');
 $access_token =  $facebook->getAccessToken();
 $facebook->setAccessToken($access_token);
-
-$session = Facebook\FacebookSession::newAppSession('1486180144974468','528b621709faf5bf2277b5272a1572e6');
 print_r($session);
 
 $session = new FacebookSession('$access_token');
@@ -27,6 +32,7 @@ $helper->getLoginUrl(array('scope' => 'user_events'));
 
 
 try {
+	if(isset($session)){
 	
   $request = new FacebookRequest(
   $session,
@@ -37,7 +43,11 @@ $response = $request->execute();
 $graphObject = $response->getGraphObject();
  print_r $graphObject;
  echo "List of attendees" $graphObject;
- 
+ } else {
+  // show login url
+  echo '<a href="' . $helper->getLoginUrl() . '">Login</a>';
+}
+	
 } catch (FacebookRequestException $e) {
 	print_r($e);
   // The Graph API returned an error
